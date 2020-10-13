@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Api } from "../../services";
-import { Table, Button } from "semantic-ui-react";
+import { Table, Button, Grid } from "semantic-ui-react";
 
 function Home() {
   const [users, setUsers] = useState([]);
@@ -26,9 +26,13 @@ function Home() {
             <Button basic color="blue">
               Ver
             </Button>
+          </Table.Cell>
+          <Table.Cell>
             <Button basic color="orange">
               Editar
             </Button>
+          </Table.Cell>
+          <Table.Cell>
             <Button basic color="red">
               Excluir
             </Button>
@@ -42,18 +46,26 @@ function Home() {
 
   return (
     <>
-      <Table striped>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Id</Table.HeaderCell>
-            <Table.HeaderCell>user name</Table.HeaderCell>
-            <Table.HeaderCell>name</Table.HeaderCell>
-            <Table.HeaderCell>E-mail</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>{rows}</Table.Body>
-      </Table>
+      <Grid centered>
+        <Grid.Row>
+          <Grid.Column computer={8} mobile={16}>
+            <Table striped>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Id</Table.HeaderCell>
+                  <Table.HeaderCell>user name</Table.HeaderCell>
+                  <Table.HeaderCell>name</Table.HeaderCell>
+                  <Table.HeaderCell>E-mail</Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>{rows}</Table.Body>
+            </Table>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </>
   );
 }
