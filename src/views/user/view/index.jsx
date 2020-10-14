@@ -37,6 +37,9 @@ function UserView(props) {
     });
   };
 
+  const handleSubmit = () => { 
+  };
+
   return (
     <div>
       <Title title={"Dados do Usuário"} />
@@ -48,13 +51,16 @@ function UserView(props) {
             </Dimmer>
             <Form>
               <Form.Group>
-                <Form.Input
-                  label="Nome"
-                  placeholder="Nome"
+                <Form.Input                                                    
+                  label="Nome*"
+                  placeholder="Nome*"
                   width={3}
                   value={user.name}
                   onChange={(e, { value }) => {
                     handleChangeField("name", value);
+                  }}
+                  error={{
+                    content: 'Campo obrigatório',                  
                   }}
                 />
                 <Form.Input
@@ -169,7 +175,7 @@ function UserView(props) {
               </Form.Group>
             </Form>
             <Segment vertical>
-              <Button primary disabled={!edit} type="button">
+              <Button primary disabled={!edit} onClick={handleSubmit} type="button">
                 Salvar {edit}
               </Button>
               <Link to="/">
