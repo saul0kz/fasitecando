@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Api } from "../../../services";
 import Title from "../../../components/title";
-import { Form, Segment, Dimmer, Loader } from "semantic-ui-react";
+import { Form, Segment, Dimmer, Loader, Button } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 
 function UserView(props) {
   const [id] = useState(props.match.params.id);
@@ -14,10 +15,9 @@ function UserView(props) {
       .then((response) => {
         setUser(response.data);
         setLoading(false);
-        
       })
       .catch((error) => {
-       setLoading(false);
+        setLoading(false);
       });
   }, [id]);
 
@@ -33,7 +33,7 @@ function UserView(props) {
     let obj = user[object];
     obj[field] = value;
     setUser((prevState) => {
-      return { ...prevState, [field]: obj };
+      return { ...prevState, [object]: obj };
     });
   };
 
@@ -41,7 +41,7 @@ function UserView(props) {
     <div>
       <Title title={"Dados do Usuário"} />
       {user ? (
-        <div>
+        <div style={{ width: "80%", margin: "auto" }}>
           <Segment>
             <Dimmer active={loading} inverted page>
               <Loader>Carregando...</Loader>
@@ -51,16 +51,25 @@ function UserView(props) {
                 <Form.Input
                   label="Nome"
                   placeholder="Nome"
-                  width={6}
+                  width={3}
                   value={user.name}
                   onChange={(e, { value }) => {
                     handleChangeField("name", value);
                   }}
                 />
                 <Form.Input
-                  label="phone"
-                  placeholder="phone"
-                  width={4}
+                  label="Username"
+                  placeholder="Username"
+                  width={2}
+                  value={user.username}
+                  onChange={(e, { value }) => {
+                    handleChangeField("username", value);
+                  }}
+                />
+                <Form.Input
+                  label="Telefone"
+                  placeholder="Telefone"
+                  width={2}
                   value={user.phone}
                   onChange={(e, { value }) => {
                     handleChangeField("phone", value);
@@ -69,18 +78,16 @@ function UserView(props) {
                 <Form.Input
                   label="E-mail"
                   placeholder="E-mail"
-                  width={4}
+                  width={3}
                   value={user.email}
                   onChange={(e, { value }) => {
                     handleChangeField("email", value);
                   }}
                 />
-              </Form.Group>
-              <Form.Group>
                 <Form.Input
                   label="Web Site"
                   placeholder="Web Site"
-                  width={6}
+                  width={4}
                   value={user.website}
                   onChange={(e, { value }) => {
                     handleChangeField("website", value);
@@ -88,30 +95,87 @@ function UserView(props) {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Input placeholder="2 Wide" value={edit} width={2} />
+                <label>Endereço:</label>
+              </Form.Group>
+              <Form.Group>
                 <Form.Input
-                  value={user.address?.street}
+                  label="Rua"
+                  placeholder="Rua"
+                  value={user.address.street}
                   onChange={(e, { value }) => {
                     handleChangeFieldObject("address", "street", value);
                   }}
-                  placeholder="12 Wide"
-                  width={12}
+                  width={3}
                 />
                 <Form.Input
-                  value={user.address?.suite}
-                  placeholder="2 Wide"
+                  label="Suite"
+                  placeholder="Suite"
+                  value={user.address.suite}
                   onChange={(e, { value }) => {
                     handleChangeFieldObject("address", "suite", value);
                   }}
                   width={2}
                 />
+                <Form.Input
+                  label="Cidade"
+                  placeholder="Cidade"
+                  value={user.address.city}
+                  onChange={(e, { value }) => {
+                    handleChangeFieldObject("address", "city", value);
+                  }}
+                  width={2}
+                />
+                <Form.Input
+                  label="Zipcode"
+                  placeholder="Zipcode"
+                  value={user.address.zipcode}
+                  onChange={(e, { value }) => {
+                    handleChangeFieldObject("address", "zipcode", value);
+                  }}
+                  width={3}
+                />
               </Form.Group>
               <Form.Group>
-                <Form.Input placeholder="8 Wide" width={8} />
-                <Form.Input placeholder="6 Wide" width={6} />
-                <Form.Input placeholder="2 Wide" width={2} />
+                <label>Empresa:</label>
+              </Form.Group>
+              <Form.Group>
+                <Form.Input
+                  label="Nome"
+                  placeholder="Nome"
+                  value={user.company.name}
+                  onChange={(e, { value }) => {
+                    handleChangeFieldObject("company", "name", value);
+                  }}
+                  width={3}
+                />
+                <Form.Input
+                  label="Catch Phrase"
+                  placeholder="Catch Phrase"
+                  value={user.company.catchPhrase}
+                  onChange={(e, { value }) => {
+                    handleChangeFieldObject("company", "catchPhrase", value);
+                  }}
+                  width={4}
+                />
+                <Form.Input
+                  label="bs"
+                  placeholder="bs"
+                  value={user.company.bs}
+                  onChange={(e, { value }) => {
+                    handleChangeFieldObject("company", "bs", value);
+                  }}
+                  width={3}
+                />
               </Form.Group>
             </Form>
+            <Segment vertical>
+              <Button primary disabled={!edit} type="button">
+                Salvar {edit}
+              </Button>
+              <Link to="/">
+                <Button secondary>Voltar</Button>
+              </Link>
+            </Segment>
           </Segment>
         </div>
       ) : null}
