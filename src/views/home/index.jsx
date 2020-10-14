@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Api } from "../../services";
 import { Table, Button, Grid } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 
 function Home() {
   const [users, setUsers] = useState([]);
@@ -23,9 +24,11 @@ function Home() {
           <Table.Cell>{user.name}</Table.Cell>
           <Table.Cell>{user.email}</Table.Cell>
           <Table.Cell>
-            <Button basic color="blue">
-              Ver
-            </Button>
+            <Link to={"./users/" + user.id}>
+              <Button basic color="blue">
+                Ver
+              </Button>
+            </Link>
           </Table.Cell>
           <Table.Cell>
             <Button basic color="orange">
