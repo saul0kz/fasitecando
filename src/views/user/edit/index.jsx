@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import validator from "validator";
 
-function UserView(props) {
+function UserEdit(props) {
   const [id] = useState(props.match.params.id);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +48,7 @@ function UserView(props) {
   const isValid = () => {
     const isNameValid = !validator.isEmpty(user.name);
     const isUserNameValid = !validator.isEmpty(user.username);
-    const validators = [isNameValid, isUserNameValid];   
+    const validators = [isNameValid, isUserNameValid];
     return !validators.includes(false);
   };
 
@@ -59,7 +59,7 @@ function UserView(props) {
     }
     setLoading(true);
     Api.put("/users/" + id, user)
-      .then((response) => {        
+      .then((response) => {
         setLoading(false);
         setMessage("success");
       })
@@ -265,4 +265,4 @@ function UserView(props) {
   );
 }
 
-export default UserView;
+export default UserEdit;
