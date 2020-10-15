@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Api } from "../../../services";
 import Title from "../../../components/title";
-import { Form, Segment, Dimmer, Loader, Button } from "semantic-ui-react";
+import {
+  Form,
+  Segment,
+  Dimmer,
+  Loader,
+  Button,
+  Message,
+} from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import validator from "validator";
 
 function UserView(props) {
   const [id] = useState(props.match.params.id);
   const [user, setUser] = useState(null);
-  const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     Api.get("/users/" + id, {})
@@ -22,14 +30,14 @@ function UserView(props) {
   }, [id]);
 
   const handleChangeField = (field, value) => {
-    setEdit(true);
+    setMessage(null);
     setUser((prevState) => {
       return { ...prevState, [field]: value };
     });
   };
 
   const handleChangeFieldObject = (object, field, value) => {
-    setEdit(true);
+    setMessage(null);
     let obj = user[object];
     obj[field] = value;
     setUser((prevState) => {
@@ -37,7 +45,28 @@ function UserView(props) {
     });
   };
 
-  const handleSubmit = () => { 
+  const isValid = () => {
+    const isNameValid = !validator.isEmpty(user.name);
+    const isUserNameValid = !validator.isEmpty(user.username);
+    const validators = [isNameValid, isUserNameValid];   
+    return !validators.includes(false);
+  };
+
+  const handleSubmit = () => {
+    if (!isValid()) {
+      setMessage("error");
+      return;
+    }
+    setLoading(true);
+    Api.put("/users/" + id, user)
+      .then((response) => {        
+        setLoading(false);
+        setMessage("success");
+      })
+      .catch((error) => {
+        setLoading(false);
+        setMessage("error");
+      });
   };
 
   return (
@@ -51,7 +80,7 @@ function UserView(props) {
             </Dimmer>
             <Form>
               <Form.Group>
-                <Form.Input                                                    
+                <Form.Input
                   label="Nome*"
                   placeholder="Nome*"
                   width={3}
@@ -59,15 +88,26 @@ function UserView(props) {
                   onChange={(e, { value }) => {
                     handleChangeField("name", value);
                   }}
-                  error={{
-                    content: 'Campo obrigatório',                  
-                  }}
+                  error={
+                    validator.isEmpty(user.name)
+                      ? {
+                          content: "Campo obrigatório",
+                        }
+                      : null
+                  }
                 />
                 <Form.Input
                   label="Username"
                   placeholder="Username"
                   width={2}
                   value={user.username}
+                  error={
+                    validator.isEmpty(user.username)
+                      ? {
+                          content: "Campo obrigatório",
+                        }
+                      : null
+                  }
                   onChange={(e, { value }) => {
                     handleChangeField("username", value);
                   }}
@@ -77,6 +117,13 @@ function UserView(props) {
                   placeholder="Telefone"
                   width={2}
                   value={user.phone}
+                  error={
+                    !validator.isLength(user.phone, { min: 9, max: 30 })
+                      ? {
+                          content: "Telefone inválido",
+                        }
+                      : null
+                  }
                   onChange={(e, { value }) => {
                     handleChangeField("phone", value);
                   }}
@@ -86,6 +133,13 @@ function UserView(props) {
                   placeholder="E-mail"
                   width={3}
                   value={user.email}
+                  error={
+                    !validator.isEmail(user.email)
+                      ? {
+                          content: "E-mail inválido",
+                        }
+                      : null
+                  }
                   onChange={(e, { value }) => {
                     handleChangeField("email", value);
                   }}
@@ -95,6 +149,14 @@ function UserView(props) {
                   placeholder="Web Site"
                   width={4}
                   value={user.website}
+                  error={
+                    !validator.isURL(user.website) &&
+                    !validator.isEmpty(user.website)
+                      ? {
+                          content: "Url inválida",
+                        }
+                      : null
+                  }
                   onChange={(e, { value }) => {
                     handleChangeField("website", value);
                   }}
@@ -175,13 +237,27 @@ function UserView(props) {
               </Form.Group>
             </Form>
             <Segment vertical>
-              <Button primary disabled={!edit} onClick={handleSubmit} type="button">
-                Salvar {edit}
+              <Button primary onClick={handleSubmit} type="button">
+                Salvar {isValid}
               </Button>
               <Link to="/">
                 <Button secondary>Voltar</Button>
               </Link>
             </Segment>
+            {message === "success" ? (
+              <Message
+                success
+                header="Sucesso!"
+                content="O usuário Foi atualizado com sucesso!"
+              />
+            ) : null}
+            {message === "error" ? (
+              <Message
+                error
+                header="Erro"
+                content="Não foi possivel Atualizar o Usuário"
+              />
+            ) : null}
           </Segment>
         </div>
       ) : null}
